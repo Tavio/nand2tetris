@@ -8,10 +8,20 @@
  * out = not (a == b)
  */
 
+/**
+ * From the truth table:
+ * a XOR b = !((!a && !b) || (a && b)) = !(!a && !b) && !(a && b) =
+ * = (a || b) && (!a || !b)
+*/
+
 CHIP Xor {
     IN a, b;
     OUT out;
 
     PARTS:
-    // Put your code here:
+    Not (in=a, out=notA);
+    Not (in=b, out=notB);
+    Or (a=a, b=b, out=aOrB);
+    Or (a=notA, b=notB, out=notAOrNotB);
+    And (a=aOrB, b=notAOrNotB, out=out);
 }
