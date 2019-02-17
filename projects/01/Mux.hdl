@@ -9,6 +9,10 @@
  *       b otherwise
  */
 
+/**
+ * Mux(a, b, sel) = (sel && b) || (!sel && a)
+*/
+
 CHIP Mux {
     IN a, b, sel;
     OUT out;
