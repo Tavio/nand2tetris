@@ -294,7 +294,6 @@
     
     [[./and16.png]]
 
-    
 ** Multi-way variants
 *** Mux4Way16
     
@@ -304,8 +303,3 @@
    Use it to figure out the names of the pins to use when using a chip.
 
    [[./hack-api.png]]
-** Using built-in chips
-
-   If you want to use a chip that you haven't coded yet, just rename its .hdl file provided in the project to something like .hdl1. This way,
-   the simulator will use the built-in version of the chip when you reference it in the code.
-
