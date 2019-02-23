@@ -1,0 +1,97 @@
+* Binary numbers
+  
+  With N bits we can represent 2 ^ n different things, such as numbers.
+
+ | binary | decimal |
+ |--------+---------|
+ |      0 |       0 |
+ |      1 |       1 |
+ |     10 |       2 |
+ |     11 |       3 |
+ |    100 |       4 |
+
+ Decimal system: 789 = 7 * 10^2 + 8 * 10^1 + 9 * 10^0
+ The kth digit to the right is 10^k
+ In binary, the kth digit to the right is 2^k. So:
+
+ 1 0 1 = 1 * 2^2 + 0 * 2^1 + 1 * 2^0 = 5
+ 
+** Binary -> Decimal
+
+   b_{n} b_{n-1} b_{n-2} ... b_1 b_0 = \Sigma_i b_i * 2^i 
+   
+   Maximum with k bits is 1 + 2 + 4 + ... + 2^{k-1} = 2^k - 1
+
+** Fixed word size
+ 
+   We will use a fixed number of bits, for instance 8:
+
+   0000 0000
+   0000 0001
+   ...
+   1111 1111
+
+   256 possibilities => actually 128 positive numbers and 128 negative numbers.
+
+** Decimal -> Binary
+
+   87_decimal = ?_binary
+
+   What is the largest power of 2 that fits in 87? That's 64.
+   What is the next power of two we can fit? That's 16.
+
+   87 = 64 + 16 + 4 + 2 + 1
+
+   Now we put a 1 in every bit whose power shows up in the sum:
+
+   0101 0111
+
+   99 = 64 + 32 + 2 + 1 = 0110 0011
+* Binary addition
+  Start with the rightmost digits, add them and carry if necessary
+
+  0001 0101
+ +
+  0101 1100
+  ---------
+  0111 0001
+  
+  We will be able to do this mechanically! Another one just for practice:
+
+  0111 1101
+ +
+  0011 0110
+  ---------
+  1011 0011
+  
+** Overflow
+   If there's still a carry bit when we get to the leftmost digits, we ignore it.
+   
+** Building an adder
+   1. Half adder - adds two bits
+   2. Full adder - adds three bits
+   3. Adder - adss two numbers
+   
+** Half adder
+   Adds two bits only, assuming there is no current carry.
+
+   | a | b | sum | carry |
+   |---+---+-----+-------|
+   | 0 | 0 |   0 |     0 |
+   | 0 | 1 |   1 |     0 |
+   | 1 | 0 |   1 |     0 |
+   | 1 | 1 |   0 |     1 |
+
+** Full adder
+   Adds two bits only, but carry may be present (let's call it c).
+   
+   | a | b | c | sum | carry |
+   |---+---+---+-----+-------|
+   | 0 | 0 | 0 |   0 |     0 |
+   | 0 | 0 | 1 |   1 |     0 |
+   | 0 | 1 | 0 |   1 |     0 |
+   | 0 | 1 | 1 |   0 |     1 |
+   | 1 | 0 | 0 |   1 |     0 |
+   | 1 | 0 | 1 |   0 |     1 |
+   | 1 | 1 | 0 |   0 |     1 |
+   | 1 | 1 | 1 |   1 |     1 |
