@@ -15,5 +15,5 @@ CHIP RAM8 {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    // tip: feed in to all registers; use mux/demux chips to select right register
 }

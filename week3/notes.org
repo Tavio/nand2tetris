@@ -1,0 +1,143 @@
+* Sequential logic
+** Combinatorial logic
+   - So far we've ignored the issue of time
+   - The inputs where just "there" - fixed and unchanging
+   - The output was just a function of the input, not of anything that happened previously
+   - The output was computed "instantaneously"
+** Hello, Time
+   - We want to use the same hardware over time - if we know how to add two numbers, we want
+     to use the same hardware to add any two number many times
+   - We want ot remember state. For instance when computing a sum of 100 numbers, we want to
+     remember the intermediary sum between all steps
+   - We need to deal with speed. We cannot ask the computer to do things faster than it can.
+** The Clock
+
+   In computer science we represent the physical, continous time as discrete time via an 
+   oscilator that goes up and down at a certain fixed rate. Each cycle of the clock is treated
+   as one, digital time unit. Each time unit is indivisible, nothing changes within a time unit.
+
+   A not gate for instance can only have one input inside a particular time unit; the output
+   is instantly calculated inside that time unit.
+
+   [[./clock.png]]
+
+*** Delays
+
+    Electrical signals are not instantaneous, they build slowly. So in reality the input takes time
+    to change to 1 or 0 for instance, and the same happens for the output (which also has to account 
+    for the delay of the gate itself). So long as the integer time slices defined by the clock are
+    long enough to account for those delays, we won't have to worry about them.
+    
+** Combinatorial vs sequential logic
+   
+   - Combinatorial: out[t] = function(in[t])
+   - Sequential: out[t] = function(int[t-1])
+   
+   In sequential logic, we remember things from the previous timestep in order to calculate the current
+   state. 
+
+   [[./combinatorial.png]]
+   
+   [[./sequential.png]]
+
+   From the sequential point of view, we could have input and output live in the same bus (same wire in the circuit).
+   For example, we can have a single bit that holds the state changing its value as time passes.
+
+   [[./state.png]]
+   
+* Flip Flops
+** Remembring state
+   - Missing ingredient: remember one bit of information from t-1 so it can be used at time t
+   - At the "end of time" t-1, such an ingredient can be at either of two states: "remembering
+     0", or "remembering 1"
+   - This ingredient remembers by "flipping" between these two possible states
+   - Gates that flip between two states are called flip flops
+** The clocked data flip flop
+   The DFF outputs at time t the value of the input at time t-1
+
+   [[./dff.png]]
+** Implementation of the D Flip Flop
+   This course does not go into detail on how the D Flip Flop is implemented, and it will be treated 
+   as a primitive. In many physical implementations, a DFF may be built from actual Nand gates in
+   two steps: 
+   - Step 1: create a loop achieving an "un-clocked" flip-flop
+   - Step 2: Isolation across time steps using a "master-slave" setup
+   The hardware simulator forbids combinatorial loops. a cycle in the hardware connections is allowed 
+   only if it passes through a sequential gate.
+   
+   [[./sequential-logic.png]]
+   
+** Remembering forever: 1-bit register
+
+   Remember an input bit forever, until requested to load a new value
+
+   [[./register.png]]
+   
+   [[./register-example.png]]
+
+   How do we build the 1-bit register from the flip flop?
+   - Naive approach: connect the output of a DFF to its input, thus making it output always the same value we
+     stored in it. But then how would we load a new value?
+   - Solution: use a mux to decide between using the input or the output from the DFF as input:
+
+     [[./mux-bit.png]]
+* Memory units
+** Types of memory
+   - Main memory: RAM
+   - Secondary memory: Disks, ...
+   - Volatile / non-volatile
+
+** RAM
+   - Data
+   - Instructions
+
+** Perspective
+   - Physical
+   - Logical
+
+** The most basic memory element: register
+   1 bit register => multi-bit register (we call this one simply Register)
+   Our register will have 16 bit width
+   The term "register's state" means the value currently stored inside the register
+
+** Register / read logic
+   To read the register, probe the out output (because at any point in time, the output emits
+   the value stored inside the register)
+
+** Register / write logic
+   Set in to the value to be written, and assert the load bit (set it to one)
+   From the next cycle onward, the register will store this new value (until we decide to change it again)
+
+** RAM unit   
+   A sequence of n addressable registers, with addresses 0 to n-1
+   At any given point in time, only one register in the RAM is selected
+   
+   k (width of address input) = log_{2}n
+
+   [[./ram-unit.png]]
+
+*** Read logic
+    To read register i:
+    - set address = i
+    - Result: out emits the state of Register i (the selected register)
+      
+*** Write logic
+    To set register i to v:
+    - set address = i
+    - set in = v
+    - set load = 1
+    - Result: the state of register i becomes v; from the next cycle onward, out emits v
+ 
+*** A family of RAM chips
+    In this course, we will build a family of different ram chips:
+
+    [[./ram-chips.png]]
+    
+* Counters
+** Where counters come into play
+   
+   [[./counters.png]]
+
+** Counter abstraction
+   
+   [[./counter-abstraction.png]]
