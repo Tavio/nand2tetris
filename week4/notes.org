@@ -217,7 +217,7 @@
    - Iteration
    - Pointers
    - Input/output
-
+     
 *** Registers and memory
     - D: data register (single 16-bit value)
     - A: address or data register, depending on what programmer wants
