@@ -1,0 +1,417 @@
+* Machine language: overview
+  The computer is a powerful machine that can compute anything that is computable. It is a general 
+  machine that can serve many different purposes, depending solely on the software that is running
+  on it.
+
+  To achieve this, we must be able to write software that tells the computer what to do. We do this
+  via the machine language, which is composed of instructions such as "ADD R1 R2", which would tell
+  the computer to add the contents of register 1 and register 2, whatever these are. The "ADD R1 R2"
+  command is actually called Assembly language, and is translated into binary before processing.
+
+** Concerns
+
+*** Operations
+    How do we encode operations in an instruction in order to tell the computer what to do?
+    e.g.: 1001010 means "Add"
+
+*** Program counter
+    We need to know which instruction we are executing at the moment, and need to be able to skip
+    either to the next instruction or to some other one (in order to write things like loops).
+
+*** Addressing
+    We need to be able to tell the hardware where is the value that we need it to retrieve/store in
+    memory.
+
+*** Compilation
+    Users of the computer will want to write programs in a high level language, so we need to write
+    a compiler that will translate that language into machine language.
+    
+** Mnemonics
+   We will adopt conventions that will make it easier for us to deal with machine language. Instead
+   of saying "1001010" to specify the add operation, we will say "ADD". An assembler will take care
+   of doing the translation.
+   
+** Symbols
+   Most of the time programmers won't care where in memory we store certain values. For this reason,
+   we will want to provide them with the ability of storing values using symbols. All we have to 
+   guarantee is that the value indicated by the symbol is always stored in the same place, no matter
+   where exatcly that place is.
+
+* Machine language: elements
+  - Specification of the hardware/software interface
+    + What are the supported operations?
+    + What do they operate on?
+    + How is the program controlled?
+  - Usually in close correspondence to actual hardware architecture, but not necessarily so
+  - Cost-performance tradeoff
+    + Silicon area
+    + Time to complete instruction
+    The more sophisticated the operations and data types that we support, the higher the cost
+
+** Machine operations
+   - Arithmetic (+, -, *, ...)
+   - Logical (&, |, ...)
+   - Flow control (goto, if/then/else, ...)
+
+   Different machine languages differ in the richness of operations they offer. For instance, 
+   we can decide to not offer division as a machine operation in order to save in the cost of 
+   the hardware,and leave that for the software to implement.
+   
+** Addressing
+   Accessing memory locations is expensive.
+   - Large memory spaces require long addresses
+   - Getting the memory contents into the CPU takes long
+   
+   Solution: memory hierarchy
+   
+   [[./memory-hierarchy.png]]
+   
+   Trade-off: faster access means smaller memory size
+   
+** Registers
+   Very fast memory located very close to the CPU. Can be accessed without delay and because
+   there are few of them, they have small addresses of only a few bits.
+   
+*** Data registers
+    Can be used as operands in an operation
+    
+*** Address registers
+    Store the address of a value in the bigger memory, to be used in some other operation
+
+** Addressing modes
+   
+   [[./addressing-modes.png]]
+   
+   Different ways of telling the computer where the data is that is used in an instruction.
+
+*** Input/Output
+    
+    [[./input-output.png]]
+
+*** Flow control
+    
+    [[./flow-control.png]]
+    
+    [[./conditional-jump.png]]
+
+* The Hack computer and machine language
+** Hack computer: hardware
+
+   [[./hack-computer.png]]
+   
+** Hack computer: software
+   
+   [[./hack-software.png]]
+   
+** Hack computer: control
+
+   [[./hack-control1.png]]
+   
+   [[./hack-registers.png]]
+   
+   At any given point in time, only one register is selected.
+   
+** The A-instruction
+
+   [[./a-instruction.png]]
+   
+** The C-instruction
+
+   [[./c-instruction.png]]
+   
+   [[./c-instruction-2.png]]
+   
+   [[./c-instruction-3.png]]
+   
+* Hack language specification
+
+  We can write programs using either binary code or symbolic language (mnemonics). If we write them simbolically, then
+  something needs to translate it into binary. 
+
+** The A-instruction: symbolic and binary sintax
+
+   [[./a-instruction-binary.png]]
+
+   
+** The C-instruction: symbolic and binary sintax
+   
+   [[./c-instruction-binary.png]]
+   
+   [[./c-instruction-binary2.png]]
+   
+   [[./c-instruction-binary3.png]]
+   
+   [[./c-instruction-binary4.png]]
+
+** Hack program
+   
+   Example of a hack program:
+
+   [[./hack-program.png]]
+   
+   [[./hack-program2.png]]
+   
+* I/O
+
+** Peripheral I/O devices
+   Memory mapped:
+   - Screen
+   - Keyboard
+
+   Are used to show stuff to the user and take input from them.
+   In a sophisticated environment, we have various libraries that allow us to control these devices.
+   At low-level, all we have are bits!
+   
+   The software hierarchy involved in drawing stuff on the screen is taken care of in the second part of 
+   this course.
+
+** Output
+
+*** Screen memory map 
+    A designated area in RAM dedicated to manage a display unit. The display is continuously refreshed
+    from the memory map, many times per second.
+    
+    Output is effected by writing code that manipulates the screen memory map.
+
+    As far as the HACK machine is concerned, the screen display is abstracted as a table of 512 columns
+    by 256 rows. In each cell of this table we can turn a bit on or off to represent a black/white pixel.
+
+    Our memory region that we use for the screen map will be composed of 8192 16-bit words, which is how 
+    many bits we need for 512 * 256 pixels.
+    
+    [[./screen-memory-map.png]]
+
+    
+** Input
+   
+*** Keyboard memory map
+    16 bits are enough to represent the entire keyboard, so one register will be enough!
+    
+    When a key is pressed on the keyboard, the key's scan code appears in the keyboard
+    memory map.
+    
+    [[./keyboard-memory-map.png]]
+    
+    [[./hack-character-set.png]]
+    
+    To check which key is currently being pressed:
+    - Probe the contents of the Keyboard chip
+    - The keyboard memory map starts at address 24576 in the RAM
+    - If the register contains 0, no key is pressed
+
+* Hack programming
+  
+  [[./hack-assembly-instructions.png]]
+  
+** CPU emulator
+
+   A tool for debugging and executing Hack programs.
+
+   [[./cpu-emulator.png]]
+   
+** Hack programming
+
+   - Working with registers and memory
+   - Branching
+   - Variables
+   - Iteration
+   - Pointers
+   - Input/output
+
+*** Registers and memory
+    - D: data register (single 16-bit value)
+    - A: address or data register, depending on what programmer wants
+    - M: currently selected memory register - M = RAM[A]
+
+    Typical operations:
+
+     - D=10
+       There is no C-instruction for setting the D register, so we do it indirectly:
+      
+       @10
+       D=A
+     
+     - D++ 
+       Supported by C-instruction!
+       D=D+1
+       
+     - D=RAM[17]
+       @17
+       D=M
+
+     - RAM[17] = 0
+       @17
+       M=0
+     
+     - RAM[17] = 10
+       @10
+       D=A
+       @17
+       M=D
+       
+     - RAM[5] = RAM[3]
+       @3
+       D=M
+       @5
+       M=D
+
+    Example program: add two numbers
+
+      // Program: Add2.asm
+      // Computes: RAM[2] = RAM[0] + RAM[1]
+      @0
+      D=M
+      @1
+      D=D+M
+      @2
+      M=D
+
+      [[./program-rom.png]]
+
+**** How to terminate a program properly? 
+
+     The above program does not terminate, so the cpu continues executing instructions from the ROM after the last line.
+     To terminate a program safely, end it with an infinite loop:
+
+     @6
+     0;JMP
+     
+**** Built-in symbols
+
+     The Hack language features built in symbols:
+
+     | symbol | value |
+     |--------+-------|
+     | R0     |     0 |
+     | R1     |     1 |
+     | R2     |     2 |
+     | ...    |   ... |
+     | R15    |    15 |
+
+     These symbols can be used to denote "virtual registers", to make the following more readable:
+
+     [[./built-in-symbols.png]]
+
+     Other symbols:
+
+     SCREEN - 16384
+     KBD - 24576
+     
+*** Branching
+    Example: 
+    // computes if(R0 > 0) then R1=1 else R1=0 
+
+    0   @R0
+    1   D=M   // D = RAM[0]
+
+    2   @8
+    3   D;JGT // If R0 > 0 goto 8
+
+    4   @R1
+    5   M=0   // RAM[1]=0
+
+    6   @10
+    7   0;JMP // end of program
+
+    8   @R1
+    9   M=1   // R1=1
+
+   10   @10
+   11   0;JMP
+    
+    The above is difficult to read though. Let's use symbolic references to make it better:
+
+    0  @R0
+    1  D=M   
+
+       @POSITIVE
+    2  D;JGT 
+
+    3  @R1
+    4  M=0   
+    5  @END
+    6  0;JMP 
+    
+     (POSITIVE)
+    7  @R1
+    8  M=1   
+
+     (END)
+   9   @10
+   10   0;JMP
+    
+    Symbolic refs allow us to label points in the code we can goto. When this code is translated
+    into the ROM, the labels are ignored just like comments (they don't generate code). The 
+    references to the labes are translated, and become @<line number of the reference declaration):
+
+    [[./branching.png]]
+*** Variables
+    A variable is an abstraction of a container that has a name and a value. 
+
+    Example:
+    // flips the values of RAM[0] and RAM[1]
+
+      @R1
+      D=M
+      @temp
+      M=D  //temp = @R1
+
+      @R0
+      D=M
+      @R1
+      M=D  //R1 = R0
+
+      @temp
+      D=M
+      @R0
+      M=D  //R0 = temp
+    
+    (END)
+      @END
+      0;JMP
+      
+    When we say @temp, we mean: find somoe available meomry register (say register n) and use it to represent
+    the variable temp. So, from now on, each occurence of @temp in the program will be translated into @n.
+
+    [[./variables.png]]
+   
+    This piece of code is easy to read and debug. Also, this is relocateable code - I can put it anywhere
+    in memory so long as I remember the base address that I used for it.
+
+*** Iteration
+
+    Example: compute 1 + 2 + ... + n
+    
+    
+    [[./iteration.png]]
+    
+*** Pointers
+    
+    Example: from a machine language perspective, arrays are just a base address in memory and a length. 
+
+    [[./pointers1.png]]
+    
+    [[./pointers2.png]]
+    
+    [[./pointers3.png]]
+    
+    [[./pointers4.png]]
+   
+*** Input/output
+    
+    [[./input-output2.png]]
+    
+    [[./io-programming.png]]
+
+    
+    Let's see how to draw a rectangle on the screen!
+
+    [[./rectangle-pseudo.png]]
+    
+    [[./rectangle-assembly.png]]
+
+**** Handling the keyboard
+
+     At the low level of machine language, we are only interestd in which individual key, if any, the
+     user is pressing at the moment. More complex things like obtaining whole strings as input will
+     be left to high level languages, where it is less tedious to do that.

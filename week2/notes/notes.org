@@ -96,7 +96,7 @@
    | 1 | 1 | 0 |   0 |     1 |
    | 1 | 1 | 1 |   1 |     1 |
 * Negative numbers
-  - We could take the first bit and use it as a sign bit. All other bits represents a positive number.
+  - We could take the first bit and use it as a sign bit. All other bits represent a positive number.
     This way, we can only represent half as many numbers with the same amount of bits.
     + Complications:
       * There's a -0, what does it mean?
