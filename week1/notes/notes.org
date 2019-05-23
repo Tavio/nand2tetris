@@ -186,7 +186,7 @@
 
       [[./xor-hdl.png]]
 
-** HDL: somme comments
+** HDL: some comments
    - hdl requires good documentation
    - we need to give good descriptive names to gates and connections - readability is terribly important
    - hdl is a functional/declarative language - there's no procedure going on
