@@ -1,0 +1,81 @@
+* Von Neumann Architecture
+** Elements
+*** CPU
+**** ALU
+    Logical and arithemetics operations
+**** Registers
+*** Memory
+**** Data
+**** Program
+** Information flows
+
+   [[./information-flows.png]]
+*** The Arithmetic Logic Unit
+    The ALU loads information from the Data bus and manipulates it using the Control bits.
+    The information that the ALU outputs can also be used to control the rest of the system - for instance,
+    the result of an operation computed by the ALU may control the jump in the next instruction.
+  
+    [[./control.png]]
+
+*** Data registers
+    We store intermediate results in the registers. We take data from the Data bus and put them into the registers,
+    and we take data from the registers and put them back into the data bus, so tey can be sent to other parts of the system,
+    such as the ALU.
+
+*** Address registers
+
+    Some registers are used to specify addresses, so we have to have registers connected to the address bus.
+
+    [[./address-registers.png]]
+    
+*** Memory
+
+    [[./memory.png]]
+    
+   The address that we want o access in memory comes from the Address bus. The data we take from/put into
+   memory comes from the Data bus.
+   
+**** Program Memory
+
+     [[./program-memory.png]]
+
+     We need to put the address of the next program instruction into the program memory. The instruction we get from
+     the program memory may have some data (which we put in the Data bus), or an instruction that tells the rest of the 
+     system what to do (which we put into the Control bus).
+
+* Fetch-Execute cycle
+  1. Fetch the instruction to be executed
+  2. Execute it
+  3. Repeat!
+
+** Fetching
+
+   The next instruction to be executed is located in the program memory. Where exactly? In the address indicated by
+   the program counter.
+   How do we put the address of the next instruction into the address input of the program memory? That's the program counter,
+   which is a registry. 
+
+   [[./program-counter.png]]
+
+   Process:
+   1. Update the value in program counter, either by incrementing it or by setting a new value in case of jump
+   2. Feed the output of the program counter into the address input of the program memory
+   3. Get the next instruction from the program memory
+
+** Executing
+
+   The instruction we got in the previous step specifies what to do (which arithmetic or logical instruction; what memory to access; 
+   if/where to jump)
+   Different subsets of the bits in the instruction control different aspects of the operation
+   Executing the operation involves also accessing registers and/or data memory
+   We feed the instruction into the control bus
+
+*** Fetch-Execute clash
+   When we want to read the next instruction from the program memory, we put the address of the instruction in the memory's input
+   address. When the instruction we read requires us to read data from the memory, we put that data's address in the memory's input
+   address. Because there's only one memory, and hence only one input address, what do we do? Basically, we do one thing after the other.
+   There is a multiplexor that feeds nto the address of the memory. A multiplexor helps with this:
+
+   [[./instruction-register.png]]
+
+   The current instruction is saved into a instruction register so we don't lose track of it while running the execute phase.
